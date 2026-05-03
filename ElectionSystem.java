@@ -80,7 +80,7 @@ public class ElectionSystem {
         System.out.println("Сервер запущений на порту: " + port);
     }
 
-    // ===== DATABASE =====
+    // db
     private static void connectDB() {
         String url = System.getenv("DATABASE_URL");
         if (url == null) {
@@ -179,7 +179,7 @@ public class ElectionSystem {
         }
     }
 
-    // ===== JSON PARSER =====
+    // json parser
     private static Map<String, String> parseJson(String json) {
         Map<String, String> data = new HashMap<>();
         json = json.trim().replaceAll("^\\{|\\}$", "");
