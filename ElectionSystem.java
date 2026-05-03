@@ -4,31 +4,25 @@ import java.nio.file.*;
 import java.util.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.*;
 
 public class ElectionSystem {
     private static final String PASSWORD = "1234";
-    private static final String FILE_PATH = "./candidates.json";
-    private static List<Candidate> candidates = new ArrayList<>();
+    private static Connection db;
 
     public static void main(String[] args) throws Exception {
-        loadCandidates();
-        
+        connectDB();
+        createTable();
+
         int port = System.getenv("PORT") != null ? Integer.parseInt(System.getenv("PORT")) : 4567;
         HttpServer server = HttpServer.create(new java.net.InetSocketAddress(port), 0);
-        
-        // GET /api/candidates - отримати список
+
+        // GET / POST /api/candidates
         server.createContext("/api/candidates", exchange -> {
             if ("GET".equals(exchange.getRequestMethod())) {
-                String json = "[";
-                for (int i = 0; i < candidates.size(); i++) {
-                    json += candidates.get(i).toJson();
-                    if (i < candidates.size() - 1) json += ",";
-                }
-                json += "]";
+                String json = getCandidatesJson();
                 sendResponse(exchange, json, 200);
-            }
-            // POST /api/candidates - додати кандидата
-            else if ("POST".equals(exchange.getRequestMethod())) {
+            } else if ("POST".equals(exchange.getRequestMethod())) {
                 String query = exchange.getRequestURI().getQuery();
                 String password = getQueryParam(query, "password");
                 if (!PASSWORD.equals(password)) {
@@ -36,18 +30,13 @@ public class ElectionSystem {
                     return;
                 }
                 String body = readBody(exchange);
-                Candidate c = parseCandidate(body);
-                if (c != null) {
-                    candidates.add(c);
-                    saveCandidates();
-                    sendResponse(exchange, "{\"status\":\"OK\"}", 200);
-                } else {
-                    sendResponse(exchange, "{\"error\":\"Invalid data\"}", 400);
-                }
+                boolean ok = insertCandidate(body);
+                if (ok) sendResponse(exchange, "{\"status\":\"OK\"}", 200);
+                else sendResponse(exchange, "{\"error\":\"Invalid data\"}", 400);
             }
         });
-        
-        // DELETE /api/candidates/{name} - видалити кандидата
+
+        // DELETE /api/candidates/{name}
         server.createContext("/api/candidates/", exchange -> {
             if ("DELETE".equals(exchange.getRequestMethod())) {
                 String query = exchange.getRequestURI().getQuery();
@@ -56,18 +45,19 @@ public class ElectionSystem {
                     sendResponse(exchange, "{\"error\":\"Wrong password\"}", 403);
                     return;
                 }
-                String name = URLDecoder.decode(exchange.getRequestURI().getPath().replaceAll("/api/candidates/", ""), StandardCharsets.UTF_8);
-                candidates.removeIf(c -> c.getName().equalsIgnoreCase(name));
-                saveCandidates();
+                String name = URLDecoder.decode(
+                    exchange.getRequestURI().getPath().replaceAll("/api/candidates/", ""),
+                    StandardCharsets.UTF_8
+                );
+                deleteCandidate(name);
                 sendResponse(exchange, "{\"status\":\"OK\"}", 200);
             }
         });
-        
-        // Статичні файли (HTML, CSS, JS)
+
+        // Static files
         server.createContext("/", exchange -> {
             String path = exchange.getRequestURI().getPath();
             if (path.equals("/") || path.equals("")) path = "/index.html";
-            
             try {
                 File file = new File("." + path);
                 if (file.exists() && file.isFile()) {
@@ -84,12 +74,146 @@ public class ElectionSystem {
             }
             exchange.close();
         });
-        
+
         server.setExecutor(null);
         server.start();
         System.out.println("Сервер запущений на порту: " + port);
-        System.out.println(" Відкрийте у браузері: http://localhost:" + port);
-        System.out.println(" Пароль: " + PASSWORD);
+    }
+
+    // ===== DATABASE =====
+    private static void connectDB() {
+        String url = System.getenv("DATABASE_URL");
+        if (url == null) {
+            System.out.println("DATABASE_URL не задано!");
+            return;
+        }
+        try {
+            // Railway: postgresql://user:pass@host:port/dbname
+            url = url.replace("postgresql://", "");
+            String userInfo = url.substring(0, url.indexOf('@'));
+            String user = userInfo.split(":")[0];
+            String pass = userInfo.split(":")[1];
+            String hostAndDb = url.substring(url.indexOf('@') + 1);
+            String jdbcUrl = "jdbc:postgresql://" + hostAndDb + "?sslmode=require";
+            db = DriverManager.getConnection(jdbcUrl, user, pass);
+            System.out.println("Підключено до PostgreSQL!");
+        } catch (Exception e) {
+            System.out.println("Помилка підключення до БД: " + e.getMessage());
+        }
+    }
+
+    private static void createTable() {
+        if (db == null) return;
+        try {
+            db.createStatement().execute(
+                "CREATE TABLE IF NOT EXISTS candidates (" +
+                "id SERIAL PRIMARY KEY," +
+                "name VARCHAR(255) UNIQUE NOT NULL," +
+                "birth_date VARCHAR(20)," +
+                "birth_place VARCHAR(255)," +
+                "popularity_index INT)"
+            );
+            System.out.println("Таблиця candidates готова");
+        } catch (Exception e) {
+            System.out.println("Помилка створення таблиці: " + e.getMessage());
+        }
+    }
+
+    private static String getCandidatesJson() {
+        if (db == null) return "[]";
+        try {
+            ResultSet rs = db.createStatement().executeQuery(
+                "SELECT name, birth_date, birth_place, popularity_index FROM candidates ORDER BY id"
+            );
+            StringBuilder json = new StringBuilder("[");
+            boolean first = true;
+            while (rs.next()) {
+                if (!first) json.append(",");
+                json.append(String.format(
+                    "{\"name\":\"%s\",\"birthDate\":\"%s\",\"birthPlace\":\"%s\",\"popularityIndex\":%d}",
+                    escapeJson(rs.getString("name")),
+                    escapeJson(rs.getString("birth_date")),
+                    escapeJson(rs.getString("birth_place")),
+                    rs.getInt("popularity_index")
+                ));
+                first = false;
+            }
+            json.append("]");
+            return json.toString();
+        } catch (Exception e) {
+            System.out.println("Помилка читання: " + e.getMessage());
+            return "[]";
+        }
+    }
+
+    private static boolean insertCandidate(String body) {
+        if (db == null) return false;
+        try {
+            Map<String, String> data = parseJson(body);
+            PreparedStatement ps = db.prepareStatement(
+                "INSERT INTO candidates (name, birth_date, birth_place, popularity_index) " +
+                "VALUES (?, ?, ?, ?) ON CONFLICT (name) DO NOTHING"
+            );
+            ps.setString(1, data.get("name"));
+            ps.setString(2, data.get("birthDate"));
+            ps.setString(3, data.get("birthPlace"));
+            ps.setInt(4, Integer.parseInt(data.get("popularityIndex")));
+            ps.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Помилка додавання: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private static void deleteCandidate(String name) {
+        if (db == null) return;
+        try {
+            PreparedStatement ps = db.prepareStatement(
+                "DELETE FROM candidates WHERE LOWER(name) = LOWER(?)"
+            );
+            ps.setString(1, name);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Помилка видалення: " + e.getMessage());
+        }
+    }
+
+    // ===== JSON PARSER =====
+    private static Map<String, String> parseJson(String json) {
+        Map<String, String> data = new HashMap<>();
+        json = json.trim().replaceAll("^\\{|\\}$", "");
+        int i = 0;
+        while (i < json.length()) {
+            int ks = json.indexOf('"', i) + 1;
+            if (ks == 0) break;
+            int ke = json.indexOf('"', ks);
+            String key = json.substring(ks, ke);
+            i = ke + 1;
+            int colon = json.indexOf(':', i);
+            i = colon + 1;
+            while (i < json.length() && json.charAt(i) == ' ') i++;
+            String value;
+            if (i < json.length() && json.charAt(i) == '"') {
+                int vs = i + 1;
+                int ve = json.indexOf('"', vs);
+                value = json.substring(vs, ve);
+                i = ve + 1;
+            } else {
+                int ve = i;
+                while (ve < json.length() && (Character.isDigit(json.charAt(ve)) || json.charAt(ve) == '-')) ve++;
+                value = json.substring(i, ve);
+                i = ve;
+            }
+            data.put(key, value);
+            while (i < json.length() && (json.charAt(i) == ',' || json.charAt(i) == ' ')) i++;
+        }
+        return data;
+    }
+
+    private static String escapeJson(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
     private static void sendResponse(HttpExchange exchange, String response, int code) throws IOException {
@@ -105,36 +229,8 @@ public class ElectionSystem {
         BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
         StringBuilder body = new StringBuilder();
         String line;
-        while ((line = reader.readLine()) != null) {
-            body.append(line);
-        }
+        while ((line = reader.readLine()) != null) body.append(line);
         return body.toString();
-    }
-
-    private static Candidate parseCandidate(String json) {
-        try {
-            json = json.trim();
-            if (json.startsWith("{") && json.endsWith("}")) {
-                Map<String, String> data = new HashMap<>();
-                String[] pairs = json.substring(1, json.length()-1).split(",");
-                for (String pair : pairs) {
-                    String[] kv = pair.split(":");
-                    if (kv.length == 2) {
-                        String key = kv[0].trim().replaceAll("[\"\\\\]", "");
-                        String val = kv[1].trim().replaceAll("[\"\\\\]", "");
-                        data.put(key, val);
-                    }
-                }
-                String name = data.get("name");
-                String birthDate = data.get("birthDate");
-                String birthPlace = data.get("birthPlace");
-                int index = Integer.parseInt(data.get("popularityIndex"));
-                return new Candidate(name, birthDate, birthPlace, index);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private static String getQueryParam(String query, String param) {
@@ -142,11 +238,8 @@ public class ElectionSystem {
         for (String pair : query.split("&")) {
             String[] kv = pair.split("=");
             if (kv.length == 2 && kv[0].equals(param)) {
-                try {
-                    return URLDecoder.decode(kv[1], StandardCharsets.UTF_8);
-                } catch (Exception e) {
-                    return "";
-                }
+                try { return URLDecoder.decode(kv[1], StandardCharsets.UTF_8); }
+                catch (Exception e) { return ""; }
             }
         }
         return "";
@@ -158,55 +251,5 @@ public class ElectionSystem {
         if (path.endsWith(".js")) return "application/javascript";
         if (path.endsWith(".json")) return "application/json";
         return "text/plain";
-    }
-
-    private static void loadCandidates() {
-        try {
-            File file = new File(FILE_PATH);
-            if (!file.exists()) {
-                saveCandidates();
-                return;
-            }
-            String content = new String(Files.readAllBytes(file.toPath()));
-            parseCandidatesFromJson(content);
-        } catch (Exception e) {
-            System.out.println(" Помилка при завантаженні: " + e.getMessage());
-        }
-    }
-
-    private static void parseCandidatesFromJson(String json) {
-        candidates.clear();
-        json = json.trim();
-        if (json.startsWith("[") && json.endsWith("]")) {
-            String content = json.substring(1, json.length() - 1);
-            if (content.isEmpty()) return;
-            
-            int depth = 0;
-            StringBuilder obj = new StringBuilder();
-            for (char c : content.toCharArray()) {
-                if (c == '{') depth++;
-                if (c == '}') depth--;
-                obj.append(c);
-                if (depth == 0 && c == '}') {
-                    Candidate c2 = parseCandidate(obj.toString());
-                    if (c2 != null) candidates.add(c2);
-                    obj = new StringBuilder();
-                }
-            }
-        }
-    }
-
-    private static void saveCandidates() {
-        try {
-            String json = "[";
-            for (int i = 0; i < candidates.size(); i++) {
-                json += candidates.get(i).toJson();
-                if (i < candidates.size() - 1) json += ",";
-            }
-            json += "]";
-            Files.write(Paths.get(FILE_PATH), json.getBytes());
-        } catch (Exception e) {
-            System.out.println(" Помилка при збереженні: " + e.getMessage());
-        }
     }
 }
