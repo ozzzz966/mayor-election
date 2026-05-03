@@ -13,7 +13,8 @@ public class ElectionSystem {
     public static void main(String[] args) throws Exception {
         loadCandidates();
         
-        HttpServer server = HttpServer.create(new java.net.InetSocketAddress(4567), 0);
+        int port = System.getenv("PORT") != null ? Integer.parseInt(System.getenv("PORT")) : 4567;
+        HttpServer server = HttpServer.create(new java.net.InetSocketAddress(port), 0);
         
         // GET /api/candidates - отримати список
         server.createContext("/api/candidates", exchange -> {
@@ -86,8 +87,8 @@ public class ElectionSystem {
         
         server.setExecutor(null);
         server.start();
-        System.out.println("Сервер запущений на http://localhost:4567");
-        System.out.println(" Відкрийте у браузері: http://localhost:4567");
+        System.out.println("Сервер запущений на порту: " + port);
+        System.out.println(" Відкрийте у браузері: http://localhost:" + port);
         System.out.println(" Пароль: " + PASSWORD);
     }
 
