@@ -2,7 +2,11 @@ FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-# Copy all source and static files
+# Download PostgreSQL JDBC driver
+RUN apt-get update && apt-get install -y wget && \
+    wget -q https://jdbc.postgresql.org/download/postgresql-42.7.3.jar -O postgresql.jar
+
+# Copy source and static files
 COPY Candidate.java .
 COPY ElectionSystem.java .
 COPY index.html .
@@ -10,12 +14,9 @@ COPY style.css .
 COPY script.js .
 COPY candidates.json .
 
-# Compile Java
-RUN javac Candidate.java ElectionSystem.java
+# Compile with PostgreSQL driver in classpath
+RUN javac -cp postgresql.jar Candidate.java ElectionSystem.java
 
-# Use Railway's PORT env variable
-ENV PORT=4567
+EXPOSE 8080
 
-EXPOSE 4567
-
-CMD ["java", "ElectionSystem"]
+CMD ["java", "-cp", ".:postgresql.jar", "ElectionSystem"]
