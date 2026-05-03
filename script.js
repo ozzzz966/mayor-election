@@ -1,3 +1,16 @@
+// ========== NAVBAR ==========
+window.addEventListener('scroll', () => {
+    const navbar = document.getElementById('navbar');
+    if (navbar) {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+    }
+});
+
+function toggleMenu() {
+    const menu = document.getElementById('navbar-mobile');
+    if (menu) menu.classList.toggle('open');
+}
+
 // ========== STATE ==========
 let allCandidates = [];
 let editingOriginalName = null;
