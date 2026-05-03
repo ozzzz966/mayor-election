@@ -21,6 +21,7 @@
             <a onclick="scrollToVoting()">Голосування</a>
             <a onclick="scrollToForm()" class="navbar-cta">+ Подати заявку</a>
         </div>
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Змінити тему">☀️</button>
         <button class="navbar-burger" id="navbar-burger" onclick="toggleMenu()">☰</button>
     </div>
     <div class="navbar-mobile" id="navbar-mobile">
@@ -114,6 +115,8 @@
     </div>
     <div class="hero-img-col">
         <div class="city-illustration">
+            <!-- DAY VERSION -->
+            <div class="svg-day">
             <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
@@ -172,155 +175,105 @@
                 <rect x="130" y="272" width="140" height="8" fill="#0f2a55"/>
                 <rect x="120" y="276" width="160" height="2" fill="url(#goldGrad)" opacity="0.6"/>
             </svg>
+            </div>
+            <!-- NIGHT VERSION -->
+            <div class="svg-night">
+            <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="skyNight" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#020510"/>
+                        <stop offset="100%" stop-color="#0a1628"/>
+                    </linearGradient>
+                    <linearGradient id="goldGrad2" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#c8923a"/>
+                        <stop offset="100%" stop-color="#f4d06f"/>
+                    </linearGradient>
+                    <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#f4d06f" stop-opacity="0.3"/>
+                        <stop offset="100%" stop-color="#f4d06f" stop-opacity="0"/>
+                    </radialGradient>
+                </defs>
+                <rect width="400" height="300" fill="url(#skyNight)"/>
+                <!-- More stars for night -->
+                <circle cx="30" cy="25" r="1.5" fill="white" opacity="0.9"><animate attributeName="opacity" values="0.9;0.2;0.9" dur="2s" repeatCount="indefinite"/></circle>
+                <circle cx="75" cy="40" r="1" fill="white" opacity="0.7"><animate attributeName="opacity" values="0.7;0.1;0.7" dur="3s" repeatCount="indefinite"/></circle>
+                <circle cx="120" cy="15" r="1.5" fill="white" opacity="0.8"><animate attributeName="opacity" values="0.8;0.3;0.8" dur="2.5s" repeatCount="indefinite"/></circle>
+                <circle cx="200" cy="10" r="1" fill="white" opacity="0.9"><animate attributeName="opacity" values="0.9;0.2;0.9" dur="1.8s" repeatCount="indefinite"/></circle>
+                <circle cx="260" cy="30" r="1.5" fill="white" opacity="0.6"><animate attributeName="opacity" values="0.6;0.1;0.6" dur="3.2s" repeatCount="indefinite"/></circle>
+                <circle cx="320" cy="20" r="1" fill="white" opacity="0.8"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="2.1s" repeatCount="indefinite"/></circle>
+                <circle cx="370" cy="35" r="1.5" fill="white" opacity="0.5"><animate attributeName="opacity" values="0.5;0.1;0.5" dur="3.5s" repeatCount="indefinite"/></circle>
+                <circle cx="50" cy="60" r="1" fill="white" opacity="0.6"><animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.8s" repeatCount="indefinite"/></circle>
+                <circle cx="340" cy="55" r="1" fill="white" opacity="0.7"><animate attributeName="opacity" values="0.7;0.1;0.7" dur="1.5s" repeatCount="indefinite"/></circle>
+                <!-- Moon glow -->
+                <circle cx="340" cy="55" r="40" fill="url(#moonGlow)"/>
+                <!-- Moon -->
+                <circle cx="340" cy="55" r="28" fill="#f4e4a0" opacity="0.95"/>
+                <circle cx="352" cy="47" r="22" fill="#0a1628"/>
+                <!-- Moon craters -->
+                <circle cx="325" cy="65" r="4" fill="#e8d080" opacity="0.4"/>
+                <circle cx="335" cy="50" r="2.5" fill="#e8d080" opacity="0.3"/>
+                <!-- Dark buildings bg -->
+                <rect x="0" y="170" width="70" height="130" fill="#050c1a"/>
+                <rect x="10" y="150" width="40" height="150" fill="#071020"/>
+                <rect x="18" y="162" width="7" height="7" fill="#f4d06f" opacity="0.8"><animate attributeName="opacity" values="0.8;0.3;0.8" dur="4s" repeatCount="indefinite"/></rect>
+                <rect x="30" y="162" width="7" height="7" fill="#f4d06f" opacity="0.4"/>
+                <rect x="18" y="176" width="7" height="7" fill="#4a90d9" opacity="0.6"/>
+                <rect x="30" y="176" width="7" height="7" fill="#f4d06f" opacity="0.9"><animate attributeName="opacity" values="0.9;0.4;0.9" dur="2s" repeatCount="indefinite"/></rect>
+                <!-- Main building - city hall night -->
+                <rect x="130" y="100" width="140" height="200" fill="#071020"/>
+                <!-- Columns with subtle glow -->
+                <rect x="145" y="130" width="10" height="170" fill="#050c1a"/>
+                <rect x="165" y="130" width="10" height="170" fill="#050c1a"/>
+                <rect x="185" y="130" width="10" height="170" fill="#050c1a"/>
+                <rect x="205" y="130" width="10" height="170" fill="#050c1a"/>
+                <rect x="225" y="130" width="10" height="170" fill="#050c1a"/>
+                <rect x="245" y="130" width="10" height="170" fill="#050c1a"/>
+                <!-- Pediment night -->
+                <polygon points="120,130 200,80 280,130" fill="#0a1628"/>
+                <polygon points="130,130 200,85 270,130" fill="#071020"/>
+                <!-- Dome night -->
+                <ellipse cx="200" cy="75" rx="35" ry="15" fill="#071020"/>
+                <ellipse cx="200" cy="68" rx="28" ry="12" fill="#050c1a"/>
+                <!-- Flag night with glow -->
+                <line x1="200" y1="55" x2="200" y2="20" stroke="#f4d06f" stroke-width="2" opacity="0.8"/>
+                <rect x="200" y="20" width="25" height="16" fill="#f4b942" opacity="0.9"/>
+                <rect x="200" y="20" width="25" height="8" fill="#4a90d9" opacity="0.9"/>
+                <!-- Gold accent top line glowing -->
+                <rect x="125" y="128" width="150" height="4" fill="url(#goldGrad2)" opacity="0.9"/>
+                <rect x="125" y="128" width="150" height="4" fill="#f4d06f" opacity="0.2" filter="blur(2px)"/>
+                <!-- Lit windows night - more dramatic -->
+                <rect x="148" y="145" width="14" height="20" rx="7" fill="#f4d06f" opacity="1"><animate attributeName="opacity" values="1;0.4;1" dur="3s" repeatCount="indefinite"/></rect>
+                <rect x="172" y="145" width="14" height="20" rx="7" fill="#4a90d9" opacity="0.9"/>
+                <rect x="196" y="145" width="14" height="20" rx="7" fill="#f4d06f" opacity="0.8"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="2s" repeatCount="indefinite"/></rect>
+                <rect x="220" y="145" width="14" height="20" rx="7" fill="#f4d06f" opacity="1"><animate attributeName="opacity" values="1;0.5;1" dur="4s" repeatCount="indefinite"/></rect>
+                <rect x="244" y="145" width="14" height="20" rx="7" fill="#4a90d9" opacity="0.7"/>
+                <!-- Door night -->
+                <rect x="185" y="255" width="30" height="45" rx="15" fill="#020510"/>
+                <rect x="187" y="257" width="12" height="41" rx="6" fill="#071020"/>
+                <rect x="201" y="257" width="12" height="41" rx="6" fill="#071020"/>
+                <!-- Lanterns by door -->
+                <circle cx="183" cy="258" r="4" fill="#f4d06f" opacity="0.9"><animate attributeName="opacity" values="0.9;0.6;0.9" dur="2s" repeatCount="indefinite"/></circle>
+                <circle cx="217" cy="258" r="4" fill="#f4d06f" opacity="0.9"><animate attributeName="opacity" values="0.9;0.6;0.9" dur="2.5s" repeatCount="indefinite"/></circle>
+                <!-- Right buildings night -->
+                <rect x="290" y="145" width="85" height="155" fill="#050c1a"/>
+                <rect x="300" y="125" width="65" height="175" fill="#071020"/>
+                <rect x="308" y="138" width="11" height="9" fill="#f4d06f" opacity="0.9"><animate attributeName="opacity" values="0.9;0.3;0.9" dur="3s" repeatCount="indefinite"/></rect>
+                <rect x="325" y="138" width="11" height="9" fill="#4a90d9" opacity="0.7"/>
+                <rect x="342" y="138" width="11" height="9" fill="#f4d06f" opacity="0.5"/>
+                <rect x="308" y="153" width="11" height="9" fill="#f4d06f" opacity="0.4"/>
+                <rect x="325" y="153" width="11" height="9" fill="#f4d06f" opacity="1"><animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/></rect>
+                <!-- Ground night -->
+                <rect x="0" y="285" width="400" height="15" fill="#020510"/>
+                <rect x="120" y="278" width="160" height="8" fill="#050c1a"/>
+                <rect x="130" y="272" width="140" height="8" fill="#071020"/>
+                <rect x="120" y="276" width="160" height="2" fill="url(#goldGrad2)" opacity="0.5"/>
+                <!-- Street lights -->
+                <line x1="100" y1="220" x2="100" y2="285" stroke="#1a3a6b" stroke-width="2"/>
+                <circle cx="100" cy="218" r="5" fill="#f4d06f" opacity="0.9"><animate attributeName="opacity" values="0.9;0.7;0.9" dur="3s" repeatCount="indefinite"/></circle>
+                <line x1="300" y1="220" x2="300" y2="285" stroke="#1a3a6b" stroke-width="2"/>
+                <circle cx="300" cy="218" r="5" fill="#f4d06f" opacity="0.9"><animate attributeName="opacity" values="0.9;0.7;0.9" dur="2.5s" repeatCount="indefinite"/></circle>
+            </svg>
+            </div>
         </div>
     </div>
 </header>
-
-<!-- STATS BAR -->
-<div class="stats-bar">
-    <div class="stat"><span class="stat-num" id="stat-count">0</span><span>Кандидатів</span></div>
-    <div class="stat-divider"></div>
-    <div class="stat"><span class="stat-num">2026</span><span>Рік виборів</span></div>
-    <div class="stat-divider"></div>
-    <div class="stat"><span class="stat-num">1</span><span>Місто</span></div>
-</div>
-
-<main>
-
-    <!-- CANDIDATES LIST -->
-    <section class="section" id="list-section">
-        <div class="section-header">
-            <div class="section-tag">Реєстр</div>
-            <h2>Кандидати на посаду мера</h2>
-        </div>
-        <div id="candidates-grid" class="candidates-grid">
-            <div class="loading-state"><div class="spinner"></div><p>Завантаження...</p></div>
-        </div>
-    </section>
-
-    <!-- CHART -->
-    <section class="section" id="chart-section">
-        <div class="section-header">
-            <div class="section-tag">Аналітика</div>
-            <h2>Розподіл за індексом популярності</h2>
-            <p>Візуальний розподіл кандидатів за категоріями підтримки</p>
-        </div>
-        <div class="chart-card">
-            <canvas id="myChart" width="350" height="350"></canvas>
-            <div class="chart-legend" id="chart-legend"></div>
-        </div>
-    </section>
-
-    <!-- VOTING LIST -->
-    <section class="section" id="voting-section">
-        <div class="section-header">
-            <div class="section-tag">Голосування</div>
-            <h2>Список для голосування</h2>
-            <p>Кандидати відсортовані за індексом популярності — від найвищого до найнижчого</p>
-        </div>
-        <!-- VOTE CONFIRM MODAL -->
-        <div class="modal-overlay" id="modal-vote">
-            <div class="modal">
-                <button class="modal-close" onclick="closeModal('modal-vote')">✕</button>
-                <div class="modal-icon">🗳️</div>
-                <h3 class="modal-title">Підтвердіть голос</h3>
-                <p class="modal-desc">Ви голосуєте за:</p>
-                <div id="vote-candidate-name" style="font-family:'Playfair Display',serif;font-size:1.2em;font-weight:700;color:#0a1628;text-align:center;margin-bottom:20px;padding:14px;background:#f5f6fa;border-radius:10px;"></div>
-                <p class="modal-desc" style="font-size:0.78em;color:#e53e3e;">⚠️ Голос можна подати лише один раз!</p>
-                <div class="modal-btns" style="margin-top:16px">
-                    <button class="modal-btn-cancel" onclick="closeModal('modal-vote')">Скасувати</button>
-                    <button class="modal-btn-confirm" onclick="confirmVote()">✅ Проголосувати</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="ballot-card" id="ballot-printable">
-            <div class="ballot-header">
-                <div class="ballot-seal">🗳️</div>
-                <div>
-                    <div class="ballot-title">Офіційний бюлетень</div>
-                    <div class="ballot-subtitle">Вибори мера міста • 2026 рік</div>
-                </div>
-                <button class="btn-print no-print" onclick="printVotingList()">🖨️ Друкувати</button>
-            </div>
-            <div id="voting-list"></div>
-            <div class="vote-action no-print" id="vote-action">
-                <button class="btn-vote" id="btn-vote" onclick="openVoteConfirm()" disabled>
-                    <span id="btn-vote-text">Обери кандидата вище</span>
-                </button>
-            </div>
-            <div id="vote-results" style="display:none;padding:24px 32px 8px;">
-                <div class="results-title">📊 Результати голосування</div>
-                <div id="results-bars"></div>
-            </div>
-            <div class="ballot-footer">Виборча комісія міста • Варіант 10 • Зубрицька О.І.</div>
-        </div>
-    </section>
-
-    <!-- FORM -->
-    <section class="section form-section" id="form-section">
-        <div class="section-header">
-            <div class="section-tag">Реєстрація</div>
-            <h2>Подати заявку</h2>
-            <p>Заповніть форму для додавання нового кандидата до реєстру</p>
-        </div>
-        <div class="form-card">
-            <form id="candidateForm" novalidate>
-                <div class="form-grid">
-                    <div class="field-group">
-                        <label>ПІБ кандидата</label>
-                        <input type="text" name="name" id="name" placeholder="Іваненко Іван Іванович" autocomplete="off">
-                        <span class="field-hint">Тільки українські літери та пробіли</span>
-                        <span class="field-error" id="name-error"></span>
-                    </div>
-                    <div class="field-group">
-                        <label>Дата народження</label>
-                        <input type="text" name="birthDate" id="birthDate" placeholder="16.04.1975" autocomplete="off" maxlength="10">
-                        <span class="field-hint">Формат: ДД.ММ.РРРР</span>
-                        <span class="field-error" id="birthDate-error"></span>
-                    </div>
-                    <div class="field-group">
-                        <label>Місце народження</label>
-                        <input type="text" name="birthPlace" id="birthPlace" placeholder="Київ" autocomplete="off">
-                        <span class="field-hint">Тільки українські літери, з великої букви</span>
-                        <span class="field-error" id="birthPlace-error"></span>
-                    </div>
-                    <div class="field-group">
-                        <label>Індекс популярності</label>
-                        <select name="popularityIndex" id="popularityIndex">
-                            <option value="70">Підтриманий президентом (70)</option>
-                            <option value="15">Підтриманий опозицією (15)</option>
-                            <option value="10">Знімає кандидатуру на користь №1 (10)</option>
-                            <option value="5">Інші (5)</option>
-                        </select>
-                    </div>
-                    <div class="field-group">
-                        <label>Пароль</label>
-                        <input type="password" name="password" id="password" placeholder="Введіть пароль адміністратора">
-                        <span class="field-error" id="password-error"></span>
-                    </div>
-                </div>
-                <button type="submit" class="btn-submit">
-                    <span class="btn-text">Додати кандидата</span>
-                    <span class="btn-icon">→</span>
-                </button>
-                <div id="form-msg" class="form-msg"></div>
-            </form>
-        </div>
-    </section>
-
-</main>
-
-<footer>
-    <div class="footer-inner">
-        <div class="footer-logo">Вибори Мера<br><span>2026</span></div>
-        <div class="footer-info">
-            Курсова робота студентки групи ПМ-32<br>
-            <strong>Зубрицька Олеся Ігорівна</strong> | Варіант: 10
-        </div>
-    </div>
-</footer>
-
-<script src="script.js"></script>
-</body>
-</html>
