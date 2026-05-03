@@ -9,6 +9,28 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <div class="navbar-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+            🗳️ <span>Вибори Мера</span>
+        </div>
+        <div class="navbar-links">
+            <a onclick="scrollToList()">Кандидати</a>
+            <a onclick="document.getElementById('chart-section').scrollIntoView({behavior:'smooth'})">Аналітика</a>
+            <a onclick="scrollToVoting()">Голосування</a>
+            <a onclick="scrollToForm()" class="navbar-cta">+ Подати заявку</a>
+        </div>
+        <button class="navbar-burger" id="navbar-burger" onclick="toggleMenu()">☰</button>
+    </div>
+    <div class="navbar-mobile" id="navbar-mobile">
+        <a onclick="scrollToList();toggleMenu()">Кандидати</a>
+        <a onclick="document.getElementById('chart-section').scrollIntoView({behavior:'smooth'});toggleMenu()">Аналітика</a>
+        <a onclick="scrollToVoting();toggleMenu()">Голосування</a>
+        <a onclick="scrollToForm();toggleMenu()" class="navbar-cta-mobile">+ Подати заявку</a>
+    </div>
+</nav>
+
 
 <!-- ===== TOAST CONTAINER ===== -->
 <div id="toast-container"></div>
