@@ -277,3 +277,135 @@
         </div>
     </div>
 </header>
+<!-- STATS BAR -->
+<div class="stats-bar">
+    <div class="stat"><span class="stat-num" id="stat-count">0</span><span>Кандидатів</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num">2026</span><span>Рік виборів</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num">1</span><span>Місто</span></div>
+</div>
+
+<main>
+
+    <!-- CANDIDATES LIST -->
+    <section class="section" id="list-section">
+        <div class="section-header">
+            <div class="section-tag">Реєстр</div>
+            <h2>Кандидати на посаду мера</h2>
+        </div>
+        <div id="candidates-grid" class="candidates-grid">
+            <div class="loading-state"><div class="spinner"></div><p>Завантаження...</p></div>
+        </div>
+    </section>
+
+    <!-- CHART -->
+    <section class="section" id="chart-section">
+        <div class="section-header">
+            <div class="section-tag">Аналітика</div>
+            <h2>Розподіл за індексом популярності</h2>
+            <p>Візуальний розподіл кандидатів за категоріями підтримки</p>
+        </div>
+        <div class="chart-card">
+            <canvas id="myChart" width="350" height="350"></canvas>
+            <div class="chart-legend" id="chart-legend"></div>
+        </div>
+    </section>
+
+    <!-- VOTING LIST -->
+    <section class="section" id="voting-section">
+        <div class="section-header">
+            <div class="section-tag">Голосування</div>
+            <h2>Список для голосування</h2>
+            <p>Кандидати відсортовані за індексом популярності — від найвищого до найнижчого</p>
+        </div>
+        <div class="ballot-card" id="ballot-printable">
+            <div class="ballot-header">
+                <div class="ballot-seal">🗳️</div>
+                <div>
+                    <div class="ballot-title">Офіційний бюлетень</div>
+                    <div class="ballot-subtitle">Вибори мера міста • 2026 рік</div>
+                </div>
+                <button class="btn-print no-print" onclick="printVotingList()">🖨️ Друкувати</button>
+            </div>
+            <div id="voting-list"></div>
+            <div class="vote-action no-print" id="vote-action">
+                <button class="btn-vote" id="btn-vote" onclick="openVoteConfirm()" disabled>
+                    <span id="btn-vote-text">Обери кандидата вище</span>
+                </button>
+            </div>
+            <div id="vote-results" style="display:none;padding:24px 32px 8px;">
+                <div class="results-title">📊 Результати голосування</div>
+                <div id="results-bars"></div>
+            </div>
+            <div class="ballot-footer">Виборча комісія міста • Варіант 10 • Зубрицька О.І.</div>
+        </div>
+    </section>
+
+    <!-- FORM -->
+    <section class="section form-section" id="form-section">
+        <div class="section-header">
+            <div class="section-tag">Реєстрація</div>
+            <h2>Подати заявку</h2>
+            <p>Заповніть форму для додавання нового кандидата до реєстру</p>
+        </div>
+        <div class="form-card">
+            <form id="candidateForm" novalidate>
+                <div class="form-grid">
+                    <div class="field-group">
+                        <label>ПІБ кандидата</label>
+                        <input type="text" name="name" id="name" placeholder="Іваненко Іван Іванович" autocomplete="off">
+                        <span class="field-hint">Тільки українські літери та пробіли</span>
+                        <span class="field-error" id="name-error"></span>
+                    </div>
+                    <div class="field-group">
+                        <label>Дата народження</label>
+                        <input type="text" name="birthDate" id="birthDate" placeholder="16.04.1975" autocomplete="off" maxlength="10">
+                        <span class="field-hint">Формат: ДД.ММ.РРРР</span>
+                        <span class="field-error" id="birthDate-error"></span>
+                    </div>
+                    <div class="field-group">
+                        <label>Місце народження</label>
+                        <input type="text" name="birthPlace" id="birthPlace" placeholder="Київ" autocomplete="off">
+                        <span class="field-hint">Тільки українські літери, з великої букви</span>
+                        <span class="field-error" id="birthPlace-error"></span>
+                    </div>
+                    <div class="field-group">
+                        <label>Індекс популярності</label>
+                        <select name="popularityIndex" id="popularityIndex">
+                            <option value="70">Підтриманий президентом (70)</option>
+                            <option value="15">Підтриманий опозицією (15)</option>
+                            <option value="10">Знімає кандидатуру на користь №1 (10)</option>
+                            <option value="5">Інші (5)</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label>Пароль</label>
+                        <input type="password" name="password" id="password" placeholder="Введіть пароль адміністратора">
+                        <span class="field-error" id="password-error"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <span class="btn-text">Додати кандидата</span>
+                    <span class="btn-icon">→</span>
+                </button>
+                <div id="form-msg" class="form-msg"></div>
+            </form>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="footer-inner">
+        <div class="footer-logo">Вибори Мера<br><span>2026</span></div>
+        <div class="footer-info">
+            Курсова робота студентки групи ПМ-32<br>
+            <strong>Зубрицька Олеся Ігорівна</strong> | Варіант: 10
+        </div>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
