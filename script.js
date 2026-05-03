@@ -129,7 +129,7 @@ function formatDateInput(input) {
 async function fetchCandidates() {
     const grid = document.getElementById('candidates-grid');
     try {
-        const res = await fetch('http://localhost:4567/api/candidates');
+        const res = await fetch('/api/candidates');
         allCandidates = await res.json();
 
         const statCount = document.getElementById('stat-count');
@@ -411,7 +411,7 @@ async function deleteCandidate(name) {
     if (!password) return;
     try {
         const res = await fetch(
-            `http://localhost:4567/api/candidates/${encodeURIComponent(name)}?password=${encodeURIComponent(password)}`,
+            `/api/candidates/${encodeURIComponent(name)}?password=${encodeURIComponent(password)}`,
             { method: 'DELETE' }
         );
         if (res.ok) {
@@ -470,13 +470,13 @@ async function submitEdit() {
     try {
         // Delete old record, then add new
         const delRes = await fetch(
-            `http://localhost:4567/api/candidates/${encodeURIComponent(editingOriginalName)}?password=${encodeURIComponent(password)}`,
+            `/api/candidates/${encodeURIComponent(editingOriginalName)}?password=${encodeURIComponent(password)}`,
             { method: 'DELETE' }
         );
         if (!delRes.ok) { showToast('Невірний пароль', 'error'); return; }
 
         const addRes = await fetch(
-            `http://localhost:4567/api/candidates?password=${encodeURIComponent(password)}`,
+            `/api/candidates?password=${encodeURIComponent(password)}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -535,7 +535,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             const res = await fetch(
-                `http://localhost:4567/api/candidates?password=${encodeURIComponent(password)}`,
+                `/api/candidates?password=${encodeURIComponent(password)}`,
                 { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name:nameVal,birthDate:dateVal,birthPlace:placeVal,popularityIndex:idx}) }
             );
             if (res.ok) {
