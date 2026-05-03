@@ -1,3 +1,23 @@
+// ========== THEME TOGGLE ==========
+function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+
+// Apply saved theme on load
+(function() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+        document.body.classList.add('dark');
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('theme-toggle');
+            if (btn) btn.textContent = '☀️';
+        });
+    }
+})();
+
 // ========== NAVBAR ==========
 window.addEventListener('scroll', () => {
     const navbar = document.getElementById('navbar');
