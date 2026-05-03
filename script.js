@@ -2,6 +2,8 @@
 function toggleTheme() {
     const isDark = document.body.classList.toggle('dark');
     const btn = document.getElementById('theme-toggle');
+    // dark mode -> show sun (to switch back to light)
+    // light mode -> show moon (to switch to dark)
     if (btn) btn.textContent = isDark ? '☀️' : '🌙';
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
@@ -9,13 +11,12 @@ function toggleTheme() {
 // Apply saved theme on load
 (function() {
     const saved = localStorage.getItem('theme');
-    if (saved === 'dark') {
-        document.body.classList.add('dark');
-        document.addEventListener('DOMContentLoaded', () => {
-            const btn = document.getElementById('theme-toggle');
-            if (btn) btn.textContent = '☀️';
-        });
-    }
+    const isDark = saved === 'dark';
+    if (isDark) document.body.classList.add('dark');
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('theme-toggle');
+        if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+    });
 })();
 
 // ========== NAVBAR ==========
