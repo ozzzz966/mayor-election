@@ -35,6 +35,22 @@
 <!-- ===== TOAST CONTAINER ===== -->
 <div id="toast-container"></div>
 
+<!-- ===== MODAL: VOTE CONFIRM ===== -->
+<div class="modal-overlay" id="modal-vote">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('modal-vote')">✕</button>
+        <div class="modal-icon">🗳️</div>
+        <h3 class="modal-title">Підтвердіть голос</h3>
+        <p class="modal-desc">Ви голосуєте за:</p>
+        <div id="vote-candidate-name" style="font-family:'Playfair Display',serif;font-size:1.2em;font-weight:700;color:#0a1628;text-align:center;margin-bottom:20px;padding:14px;background:#f5f6fa;border-radius:10px;"></div>
+        <p class="modal-desc" style="font-size:0.78em;color:#e53e3e;">⚠️ Голос можна подати лише один раз!</p>
+        <div class="modal-btns" style="margin-top:16px">
+            <button class="modal-btn-cancel" onclick="closeModal('modal-vote')">Скасувати</button>
+            <button class="modal-btn-confirm" onclick="confirmVote()">✅ Проголосувати</button>
+        </div>
+    </div>
+</div>
+
 <!-- ===== MODAL: PASSWORD ===== -->
 <div class="modal-overlay" id="modal-password">
     <div class="modal">
