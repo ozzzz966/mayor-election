@@ -1,8 +1,8 @@
-// ========== STATE ==========
+// state
 let allCandidates = [];
 let editingOriginalName = null;
 
-// ========== TOAST ==========
+// toast
 function showToast(msg, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -16,7 +16,7 @@ function showToast(msg, type = 'info') {
     }, 3500);
 }
 
-// ========== MODALS ==========
+// modals
 function openModal(id) {
     document.getElementById(id).classList.add('active');
 }
@@ -30,7 +30,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     });
 });
 
-// Password modal — returns a Promise that resolves with password or null
+// Password modal 
 function askPassword(title = 'Підтвердження', desc = 'Введіть пароль адміністратора') {
     return new Promise(resolve => {
         document.getElementById('modal-password-title').textContent = title;
@@ -61,7 +61,7 @@ function askPassword(title = 'Підтвердження', desc = 'Введіт�
     });
 }
 
-// ========== VALIDATION ==========
+// validation
 const UA_ONLY = /^[А-ЯҐЄІЇа-яґєії\s'\-]+$/;
 const DATE_REGEX = /^(\d{2})\.(\d{2})\.(\d{4})$/;
 
@@ -125,7 +125,7 @@ function formatDateInput(input) {
     });
 }
 
-// ========== FETCH & RENDER ==========
+// getch and render 
 async function fetchCandidates() {
     const grid = document.getElementById('candidates-grid');
     try {
@@ -173,7 +173,7 @@ function renderCandidates() {
     });
 }
 
-// ========== CHART (pure Canvas, no lib) ==========
+// chart pure Canvas
 function renderChart() {
     const canvas = document.getElementById('myChart');
     const legendEl = document.getElementById('chart-legend');
@@ -265,12 +265,12 @@ function renderChart() {
     }).join('');
 }
 
-// ========== VOTING LIST ==========
+// voting list
 function renderVotingList() {
     const listEl = document.getElementById('voting-list');
     if (!listEl) return;
 
-    // Sort descending by popularityIndex (queue by priority)
+    // Sort descending by popularityIndex
     const sorted = [...allCandidates].sort((a, b) => b.popularityIndex - a.popularityIndex);
 
     if (sorted.length === 0) {
@@ -305,13 +305,12 @@ function printVotingList() {
     window.print();
 }
 
-// ========== VOTING LOGIC ==========
+//  voting logic
 let selectedCandidate = null;
 let votes = {}; // { name: count }
 let hasVoted = false;
 
 function renderVotingCheckboxes(sorted) {
-    // Re-render selecting state
     sorted.forEach(c => {
         const rows = document.querySelectorAll('.voting-row');
         rows.forEach(row => {
@@ -405,7 +404,7 @@ function showVoteResults() {
     }, 50);
 }
 
-// ========== DELETE ==========
+// delete
 async function deleteCandidate(name) {
     const password = await askPassword('Видалення кандидата', `Видалити "${name}"? Введіть пароль:`);
     if (!password) return;
@@ -425,7 +424,7 @@ async function deleteCandidate(name) {
     }
 }
 
-// ========== EDIT ==========
+// edit
 function openEditModal(candidate) {
     editingOriginalName = candidate.name;
     document.getElementById('edit-name').value = candidate.name;
@@ -495,7 +494,7 @@ async function submitEdit() {
     }
 }
 
-// ========== ADD FORM ==========
+// add form
 document.addEventListener('DOMContentLoaded', function () {
     fetchCandidates();
 
@@ -560,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 });
 
-// ========== HELPERS ==========
+//helpers
 function getInitials(name) {
     return name.trim().split(/\s+/).slice(0,2).map(p => p[0] || '').join('').toUpperCase() || '?';
 }
