@@ -17,7 +17,7 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { font-family: 'Montserrat', sans-serif; background: var(--bg-main, var(--gray-light)); color: var(--section-text, var(--text)); overflow-x: hidden; transition: background 0.3s, color 0.3s; }
+body { font-family: 'Montserrat', sans-serif; background: var(--gray-light); color: var(--text); overflow-x: hidden; }
 
 /* ===== TOAST ===== */
 #toast-container {
@@ -394,23 +394,10 @@ footer { background:var(--navy); color:rgba(255,255,255,0.7); padding:40px 8vw; 
     transition: background 0.35s ease, box-shadow 0.35s ease;
 }
 .navbar.scrolled {
-    background: rgba(15, 30, 60, 0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 2px 24px rgba(0,0,0,0.18);
-    border-bottom: 1px solid rgba(244,185,66,0.12);
+    background: rgba(10, 22, 40, 0.97);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 24px rgba(0,0,0,0.3);
 }
-body:not(.dark) .navbar.scrolled {
-    background: rgba(255, 255, 255, 0.92);
-    box-shadow: 0 2px 24px rgba(0,0,0,0.10);
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-}
-body:not(.dark) .navbar.scrolled .navbar-logo,
-body:not(.dark) .navbar.scrolled .navbar-links a { color: var(--navy); }
-body:not(.dark) .navbar.scrolled .navbar-logo span { color: var(--gold); }
-body:not(.dark) .navbar.scrolled .navbar-links a:hover { background: rgba(10,22,40,0.06); color: var(--navy); }
-body:not(.dark) .navbar.scrolled .theme-toggle { background: rgba(10,22,40,0.08); border-color: rgba(10,22,40,0.15); color: var(--navy); }
-body:not(.dark) .navbar.scrolled .navbar-burger { color: var(--navy); }
 .navbar-inner {
     max-width: 1100px;
     margin: 0 auto;
@@ -508,95 +495,3 @@ body:not(.dark) .navbar.scrolled .navbar-burger { color: var(--navy); }
     .navbar-burger { display: block; }
     .hero { padding-top: 120px; }
 }
-
-/* ===== DARK THEME OVERRIDES ===== */
-body.dark {
-    background: #0d1117 !important;
-    color: #e6edf3 !important;
-}
-body.dark main {
-    background: #0d1117 !important;
-}
-body.dark main,
-body.dark .candidate-card,
-body.dark .form-card,
-body.dark .chart-card,
-body.dark .ballot-card,
-body.dark .modal {
-    background: var(--bg-card);
-    border-color: var(--card-border);
-    color: var(--section-text);
-}
-body.dark .section-header h2,
-body.dark .card-name,
-body.dark .ballot-title,
-body.dark .results-title,
-body.dark .field-group label,
-body.dark .modal-title {
-    color: #e6edf3;
-}
-body.dark .card-meta-item,
-body.dark .section-header p,
-body.dark .field-hint,
-body.dark .modal-desc,
-body.dark .voting-meta,
-body.dark .ballot-footer {
-    color: #8b949e;
-}
-body.dark .field-group input,
-body.dark .field-group select,
-body.dark .modal-input {
-    background: #0d1117;
-    border-color: #30363d;
-    color: #e6edf3;
-}
-body.dark .field-group input:focus,
-body.dark .field-group select:focus { border-color: var(--gold); }
-body.dark .voting-row:hover { background: rgba(255,255,255,0.04); }
-body.dark .voting-row.selected { background: rgba(244,185,66,0.08) !important; }
-body.dark .ballot-header { background: #0a1628; }
-body.dark .result-bar-wrap { background: #21262d; }
-body.dark .ballot-footer { background: #0d1117; border-color: #21262d; }
-body.dark .legend-bar-wrap { background: #21262d; }
-body.dark .stats-bar { background: var(--gold); }
-body.dark .hero { background: linear-gradient(135deg, #050a10, #0a1628); }
-body.dark .modal-btn-cancel { border-color: #30363d; color: #8b949e; }
-body.dark .toast { background: #161b22; border-left-color: var(--gold); }
-
-/* ===== THEME TOGGLE BUTTON ===== */
-.theme-toggle {
-    background: rgba(255,255,255,0.1);
-    border: 1.5px solid rgba(255,255,255,0.2);
-    color: #fff;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.1em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.25s;
-    flex-shrink: 0;
-}
-.theme-toggle:hover {
-    background: rgba(255,255,255,0.2);
-    transform: rotate(20deg);
-}
-
-/* SVG theme switch */
-.svg-day { display: block; }
-.svg-night { display: none; }
-body.dark .svg-day { display: none; }
-body.dark .svg-night { display: block; }
-
-/* Light theme - hero stays dark (it looks good), main bg is light */
-body:not(.dark) { background: #f5f6fa; }
-body:not(.dark) main { background: #f5f6fa; }
-body:not(.dark) .candidate-card,
-body:not(.dark) .form-card,
-body:not(.dark) .chart-card,
-body:not(.dark) .ballot-card,
-body:not(.dark) .modal { background: #ffffff; }
-body:not(.dark) .section-header h2,
-body:not(.dark) .card-name { color: #0a1628; }
